@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc_demo/bloc/counter/counter_bloc.dart';
+import 'package:flutter_bloc_demo/bloc/counter/counter_event.dart';
+import 'package:flutter_bloc_demo/bloc/counter/counter_state.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -13,14 +17,23 @@ class HomePage extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text('value: 1'),
+              BlocBuilder<CounterBloc, CounterState>(builder: (context, state) {
+                if (state is UninitalizedCounterState) {
+                  return Text('Uninitialized');
+                } else if (state is HasValueCounterState) {
+                  return Text('${state.value}');
+                }
+                return Text('Error');
+              },)
             ],
           ),
           Container(height: 32.0),
           FlatButton(
             color: Colors.blue,
             child: Text('ADD', style: TextStyle(color: Colors.white)),
-            onPressed: () {},
+            onPressed: () {
+              BlocProvider.of<CounterBloc>(context).add(IncrementCounterEvent());
+            },
           )
         ],
       ),
